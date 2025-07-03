@@ -29,8 +29,8 @@ export function ExportButton({ vehicles, selectedMonth, selectedYear }: ExportBu
     const headers = ["Placa", "Modelo", "Contrato Meli", "Categoria", "Base", "Coordenador", "Gerente", "Tipo Frota"]
 
     // Calcular número de dias no mês selecionado
-    const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate()
-    const monthStr = (selectedMonth).toString().padStart(2, "0")
+    const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate()
+    const monthStr = (selectedMonth + 1).toString().padStart(2, "0")
 
     // Adicionar dias do mês
     for (let day = 1; day <= daysInMonth; day++) {
@@ -83,7 +83,7 @@ export function ExportButton({ vehicles, selectedMonth, selectedYear }: ExportBu
       "janeiro", "fevereiro", "março", "abril", "maio", "junho",
       "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
     ]
-    const monthName = monthNames[selectedMonth - 1]
+    const monthName = monthNames[selectedMonth]
     const filename = `controle-rodagem-${monthName}-${selectedYear}.xlsx`
 
     // Download
@@ -102,14 +102,6 @@ export function ExportButton({ vehicles, selectedMonth, selectedYear }: ExportBu
 }
 
 function getStatusLabel(status: string): string {
-  const labels: Record<string, string> = {
-    rodou: "Rodou",
-    manutencao: "Manutenção",
-    folga: "Folga",
-    falta: "Falta",
-    "sem-rota": "Sem rota",
-    "sem-motorista": "Sem motorista",
-  }
-
-  return labels[status] || "Desconhecido"
+  // Simplifica para apenas "Rodou" e "Não rodou"
+  return status === "rodou" ? "Rodou" : "Não rodou"
 }
