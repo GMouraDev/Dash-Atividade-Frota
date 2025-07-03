@@ -1,8 +1,9 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { StatusIcon } from "./status-icon"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react"
 
 interface Vehicle {
   id: number
@@ -23,7 +24,13 @@ interface VehicleTrackingTableProps {
   selectedYear: number
 }
 
+type SortDirection = 'asc' | 'desc' | null
+type SortColumn = string | null
+
 export function VehicleTrackingTable({ vehicles, selectedMonth, selectedYear }: VehicleTrackingTableProps) {
+  const [sortColumn, setSortColumn] = useState<SortColumn>(null)
+  const [sortDirection, setSortDirection] = useState<SortDirection>(null)
+
   const daysOfMonth = useMemo(() => {
     const days = []
     const year = selectedYear
@@ -59,6 +66,105 @@ export function VehicleTrackingTable({ vehicles, selectedMonth, selectedYear }: 
     return { workedDays, percentage }
   }
 
+  // Função para lidar com ordenação
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      // Se clicar na mesma coluna, alterna a direção
+      if (sortDirection === 'asc') {
+        setSortDirection('desc')
+      } else if (sortDirection === 'desc') {
+        setSortDirection(null)
+        setSortColumn(null)
+      } else {
+        setSortDirection('asc')
+      }
+    } else {
+      // Nova coluna, começa com ascendente
+      setSortColumn(column)
+      setSortDirection('asc')
+    }
+  }
+
+  // Função para ordenar os veículos
+  const sortedVehicles = useMemo(() => {
+    if (!sortColumn || !sortDirection) {
+      return vehicles
+    }
+
+    const sorted = [...vehicles].sort((a, b) => {
+      let aValue: any
+      let bValue: any
+
+      // Se for uma coluna de data (formato: day-XX)
+      if (sortColumn.startsWith('day-')) {
+        const day = sortColumn.substring(4) // Remove 'day-'
+        const aStatus = a.dailyStatus[day]?.status || 'sem-rota'
+        const bStatus = b.dailyStatus[day]?.status || 'sem-rota'
+        
+        // Prioridade: rodou > sem-rota > outros
+        const getStatusPriority = (status: string) => {
+          if (status === 'rodou') return 3
+          if (status === 'sem-rota') return 1
+          return 2
+        }
+        
+        aValue = getStatusPriority(aStatus)
+        bValue = getStatusPriority(bStatus)
+      } 
+      // Colunas de estatísticas
+      else if (sortColumn === 'total') {
+        aValue = calculateStats(a.dailyStatus).workedDays
+        bValue = calculateStats(b.dailyStatus).workedDays
+      } else if (sortColumn === 'percentage') {
+        aValue = calculateStats(a.dailyStatus).percentage
+        bValue = calculateStats(b.dailyStatus).percentage
+      }
+      // Colunas normais
+      else {
+        aValue = a[sortColumn as keyof Vehicle]
+        bValue = b[sortColumn as keyof Vehicle]
+      }
+
+      // Converte para string para comparação consistente
+      const aStr = String(aValue || '').toLowerCase()
+      const bStr = String(bValue || '').toLowerCase()
+
+      if (sortDirection === 'asc') {
+        return aStr.localeCompare(bStr, 'pt-BR', { numeric: true })
+      } else {
+        return bStr.localeCompare(aStr, 'pt-BR', { numeric: true })
+      }
+    })
+
+    return sorted
+  }, [vehicles, sortColumn, sortDirection])
+
+  // Componente para o ícone de ordenação
+  const SortIcon = ({ column }: { column: string }) => {
+    if (sortColumn !== column) {
+      return <ChevronsUpDown size={12} className="text-gray-400 dark:text-gray-500" />
+    }
+    
+    if (sortDirection === 'asc') {
+      return <ChevronUp size={12} className="text-blue-600 dark:text-green-400" />
+    } else if (sortDirection === 'desc') {
+      return <ChevronDown size={12} className="text-blue-600 dark:text-green-400" />
+    }
+    
+    return <ChevronsUpDown size={12} className="text-gray-400 dark:text-gray-500" />
+  }
+
+  // Componente para cabeçalho clicável
+  const SortableHeader = ({ column, children, className = "" }: { column: string, children: React.ReactNode, className?: string }) => (
+    <div 
+      className={`px-2 py-3 text-xs font-bold text-gray-700 dark:text-gray-200 border-r border-blue-100 dark:border-gray-600 text-center cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-600 transition-colors duration-150 flex items-center justify-center gap-1 ${className}`}
+      onClick={() => handleSort(column)}
+    >
+      <span>{children}</span>
+      <SortIcon column={column} />
+    </div>
+  )
+
   return (
     <TooltipProvider>
       <div className="border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900 shadow-xl dark:shadow-green-500/20 overflow-hidden transition-colors duration-300">
@@ -67,25 +173,15 @@ export function VehicleTrackingTable({ vehicles, selectedMonth, selectedYear }: 
             {/* Header */}
             <div className="flex bg-gradient-to-r from-slate-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 border-b-2 border-blue-100 dark:border-green-600 sticky top-0 z-10">
               {/* Fixed columns */}
-                              <div className="flex bg-gradient-to-r from-slate-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 sticky left-0 z-20 border-r-2 border-blue-200 dark:border-green-600">
-                <div className="w-20 px-2 py-3 text-xs font-bold text-gray-700 dark:text-gray-200 border-r border-blue-100 dark:border-gray-600 text-center">Placa</div>
-                <div className="w-32 px-2 py-3 text-xs font-bold text-gray-700 dark:text-gray-200 border-r border-blue-100 dark:border-gray-600 text-center">Modelo</div>
-                <div className="w-24 px-2 py-3 text-xs font-bold text-gray-700 dark:text-gray-200 border-r border-blue-100 dark:border-gray-600 text-center">
-                  Contrato
-                </div>
-                <div className="w-20 px-2 py-3 text-xs font-bold text-gray-700 dark:text-gray-200 border-r border-blue-100 dark:border-gray-600 text-center">
-                  Categoria
-                </div>
-                <div className="w-20 px-2 py-3 text-xs font-bold text-gray-700 dark:text-gray-200 border-r border-blue-100 dark:border-gray-600 text-center">Base</div>
-                <div className="w-28 px-2 py-3 text-xs font-bold text-gray-700 dark:text-gray-200 border-r border-blue-100 dark:border-gray-600 text-center">
-                  Coordenador
-                </div>
-                <div className="w-28 px-2 py-3 text-xs font-bold text-gray-700 dark:text-gray-200 border-r border-blue-100 dark:border-gray-600 text-center">
-                  Gerente
-                </div>
-                <div className="w-20 px-2 py-3 text-xs font-bold text-gray-700 dark:text-gray-200 border-r border-blue-100 dark:border-gray-600 text-center">
-                  Tipo
-                </div>
+              <div className="flex bg-gradient-to-r from-slate-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 sticky left-0 z-20 border-r-2 border-blue-200 dark:border-green-600">
+                <SortableHeader column="placa" className="w-20">Placa</SortableHeader>
+                <SortableHeader column="modelo" className="w-32">Modelo</SortableHeader>
+                <SortableHeader column="contratoMeli" className="w-24">Contrato</SortableHeader>
+                <SortableHeader column="categoria" className="w-20">Categoria</SortableHeader>
+                <SortableHeader column="base" className="w-20">Base</SortableHeader>
+                <SortableHeader column="coordenador" className="w-28">Coordenador</SortableHeader>
+                <SortableHeader column="gerente" className="w-28">Gerente</SortableHeader>
+                <SortableHeader column="tipoFrota" className="w-20">Tipo</SortableHeader>
               </div>
 
               {/* Day columns */}
@@ -93,15 +189,19 @@ export function VehicleTrackingTable({ vehicles, selectedMonth, selectedYear }: 
                 {daysOfMonth.map((day) => (
                   <div
                     key={day.day}
-                    className={`w-12 px-1 py-3 text-center border-r border-blue-100 dark:border-gray-600 ${
+                    className={`w-12 px-1 py-3 text-center border-r border-blue-100 dark:border-gray-600 cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-600 transition-colors duration-150 ${
                       day.isSunday
                         ? "bg-gradient-to-b from-red-100 to-red-50 dark:from-red-900/30 dark:to-red-800/20"
                         : day.isWeekend
                           ? "bg-gradient-to-b from-gray-100 to-gray-50 dark:from-gray-700 dark:to-gray-600"
                           : "bg-gradient-to-b from-white to-blue-50 dark:from-gray-800 dark:to-gray-700"
                     }`}
+                    onClick={() => handleSort(`day-${day.day}`)}
                   >
-                    <div className="text-xs font-bold text-gray-700 dark:text-gray-200">{day.dayOfWeek}</div>
+                    <div className="text-xs font-bold text-gray-700 dark:text-gray-200 flex items-center justify-center gap-1">
+                      <span>{day.dayOfWeek}</span>
+                      <SortIcon column={`day-${day.day}`} />
+                    </div>
                     <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">{day.dateStr}</div>
                   </div>
                 ))}
@@ -109,13 +209,13 @@ export function VehicleTrackingTable({ vehicles, selectedMonth, selectedYear }: 
 
               {/* Stats columns */}
               <div className="flex bg-gradient-to-r from-slate-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 sticky right-0 z-20 border-l-2 border-blue-200 dark:border-green-600">
-                <div className="w-20 px-2 py-3 text-xs font-bold text-gray-700 dark:text-gray-200 border-r border-blue-100 dark:border-gray-600 text-center">Total</div>
-                <div className="w-16 px-2 py-3 text-xs font-bold text-gray-700 dark:text-gray-200 text-center">%</div>
+                <SortableHeader column="total" className="w-20">Total</SortableHeader>
+                <SortableHeader column="percentage" className="w-16">%</SortableHeader>
               </div>
             </div>
 
             {/* Rows */}
-            {vehicles.map((vehicle, index) => {
+            {sortedVehicles.map((vehicle, index) => {
               const stats = calculateStats(vehicle.dailyStatus)
 
               return (
