@@ -15,7 +15,6 @@ interface FilterControlsProps {
     categoria: string
     base: string
     tipoFrota: string
-    status: string
   }
   onFiltersChange: (filters: any) => void
   uniqueValues: {
@@ -56,7 +55,6 @@ export function FilterControls({
       categoria: "all",
       base: "all",
       tipoFrota: "all",
-      status: "all",
     })
   }
 
@@ -206,7 +204,7 @@ export function FilterControls({
             </div>
 
             {/* Segunda linha de filtros */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Contrato Meli</label>
                 <Select value={filters.contratoMeli} onValueChange={(value) => handleFilterChange("contratoMeli", value)}>
@@ -258,19 +256,7 @@ export function FilterControls({
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
-                <Select value={filters.status} onValueChange={(value) => handleFilterChange("status", value)}>
-                  <SelectTrigger className="h-9 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-green-500 text-gray-900 dark:text-gray-100">
-                    <SelectValue placeholder="Todos" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos</SelectItem>
-                    <SelectItem value="rodou">✓ Rodou</SelectItem>
-                    <SelectItem value="nao-rodou">✗ Não rodou</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+
             </div>
           </div>
         </div>

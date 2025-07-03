@@ -188,7 +188,6 @@ export default function VehicleTrackingPage() {
     categoria: "all",
     base: "all",
     tipoFrota: "all",
-    status: "all",
   })
 
   // Carrega dados da API na inicialização
@@ -237,10 +236,7 @@ export default function VehicleTrackingPage() {
         (!filters.contratoMeli || filters.contratoMeli === "all" || vehicle.contratoMeli === filters.contratoMeli) &&
         (!filters.categoria || filters.categoria === "all" || vehicle.categoria === filters.categoria) &&
         (!filters.base || filters.base === "all" || vehicle.base === filters.base) &&
-        (!filters.tipoFrota || filters.tipoFrota === "all" || vehicle.tipoFrota === filters.tipoFrota) &&
-        (!filters.status || filters.status === "all" ||
-          (filters.status === "rodou" && Object.values(vehicle.dailyStatus).some((dailyStatus) => dailyStatus.status === "rodou")) ||
-          (filters.status === "nao-rodou" && Object.values(vehicle.dailyStatus).some((dailyStatus) => dailyStatus.status !== "rodou")))
+        (!filters.tipoFrota || filters.tipoFrota === "all" || vehicle.tipoFrota === filters.tipoFrota)
       )
     })
   }, [vehicles, filters])
@@ -319,12 +315,7 @@ export default function VehicleTrackingPage() {
           <CardContent className="p-8 text-center">
             <div className="animate-spin w-16 h-16 border-4 border-blue-500 dark:border-green-500 border-t-transparent rounded-full mx-auto mb-4"></div>
             <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">Carregando dados...</h3>
-            <p className="text-gray-500 dark:text-gray-400 mb-4">Processando planilhas Excel...</p>
-            <div className="text-xs text-gray-400 dark:text-gray-500 space-y-1">
-              <p>• Base-Veiculos.xlsx (422 veículos)</p>
-              <p>• Base Rotas.xlsx (20.226 rotas)</p>
-              <p className="mt-2 text-yellow-600">Se demorar muito, abra o Console (F12)</p>
-            </div>
+            <p className="text-gray-500 dark:text-gray-400">Aguarde um momento...</p>
           </CardContent>
         </Card>
       </div>
