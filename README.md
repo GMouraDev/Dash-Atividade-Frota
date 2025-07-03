@@ -1,161 +1,210 @@
-# 🚌 Dash Atividade Frota
+# 🚌 Dashboard de Atividade da Frota
 
-Sistema de controle e monitoramento de atividades da frota de veículos, desenvolvido com **Next.js 15**, **React 19**, **TypeScript** e **shadcn/ui**.
+Sistema completo de controle e monitoramento de atividades da frota de veículos, com integração Excel e interface moderna.
+
+## 📋 Sobre o Projeto
+
+Dashboard profissional para gestão de frota que processa dados reais de planilhas Excel (Base de Veículos e Base de Rotas), oferecendo uma visão consolidada da atividade diária dos veículos com filtros avançados, estatísticas automáticas e exportação de relatórios.
 
 ## ✨ Funcionalidades
 
-- 📊 **Dashboard interativo** com visão mensal da atividade dos veículos
-- 🚗 **Controle de status** (rodou, manutenção, folga, falta, sem-rota, sem-motorista)
+- 📊 **Dashboard interativo** com controle mensal da atividade dos veículos
+- 📈 **Processamento de dados Excel** - integração com planilhas reais (422 veículos, 20.226 rotas)
 - 🔍 **Filtros avançados** por:
-  - 📅 Data (mês/ano)
+  - 📅 Período (mês/ano)
   - 👨‍💼 Coordenador
   - 👔 Gerente
-  - 🚗 Motorista (busca por texto)
-  - 🏷️ Placa
-  - 📄 Contrato
-  - 🏢 Base
-  - 🚌 Modalidade
-  - 📊 Status
-- 📈 **Estatísticas automáticas** de utilização e percentual de rodagem
-- 📤 **Exportação de relatórios** em diferentes formatos
-- 💡 **Tooltips informativos** com detalhes das rotas e informações extras
-- 📱 **Interface responsiva** e moderna com layout otimizado
-- 🎨 **Design system** com shadcn/ui e Tailwind CSS
-- ⚡ **Performance otimizada** com dados determinísticos (sem erros de hidratação)
+  - 🏷️ Placa (busca por texto)
+  - 📄 Contrato Meli
+  - 🏢 Categoria
+  - 🏭 Base
+  - 🚌 Tipo de Frota
+- ✅ **Status simplificado** - Rodou/Não rodou com tooltips informativos
+- 📊 **Estatísticas automáticas** de utilização e percentual de rodagem
+- 📤 **Export XLSX** com dados filtrados
+- 💡 **Tooltips detalhados** com informações da rota (ID, Milha, Cluster, Motorista, Performance)
+- 🌙 **Modo escuro/claro** com design elegante preto e verde
+- 📱 **Interface responsiva** otimizada para desktop e mobile
+- ⚡ **Paginação inteligente** com controle de itens por página
+- 🎯 **Performance otimizada** sem erros de hidratação
 
 ## 🛠️ Tecnologias
 
-- **Next.js 15** - Framework React
+### Frontend
+- **Next.js 15** - Framework React com App Router
 - **React 19** - Biblioteca de interface
 - **TypeScript** - Tipagem estática
-- **Tailwind CSS** - Estilização
-- **shadcn/ui** - Componentes de interface
-- **Radix UI** - Componentes primitivos
-- **Lucide React** - Ícones
-- **Recharts** - Gráficos (preparado para uso futuro)
+- **Tailwind CSS** - Estilização utilitária
+- **shadcn/ui** - Sistema de componentes
+- **Radix UI** - Componentes primitivos acessíveis
+- **Lucide React** - Biblioteca de ícones
 
-## 🚀 Instalação e Execução
+### Processamento de Dados
+- **SheetJS (xlsx)** - Processamento de planilhas Excel
+- **Node.js File System** - Leitura de arquivos do servidor
+
+### Outros
+- **next-themes** - Sistema de temas (modo escuro/claro)
+- **class-variance-authority** - Utilitário para variantes de classes
+- **clsx & tailwind-merge** - Utilitários CSS condicionais
+
+## 🚀 Instalação
 
 ### Pré-requisitos
+- **Node.js** 18.17+ 
+- **npm**, **pnpm** ou **yarn**
 
-- **Node.js** 18+ 
-- **pnpm** (recomendado) ou npm/yarn
-
-### 1. Clone e acesse o repositório
-\`\`\`bash
-git clone <url-do-seu-repositorio>
+### 1. Clone o repositório
+```bash
+git clone https://github.com/GMouraDev/Dash-Atividade-Frota.git
 cd Dash-Atividade-Frota
-\`\`\`
+```
 
 ### 2. Instale as dependências
-\`\`\`bash
+```bash
+# Com npm
+npm install
+
 # Com pnpm (recomendado)
 pnpm install
 
-# Ou com npm
-npm install
-
-# Ou com yarn
+# Com yarn
 yarn install
-\`\`\`
+```
 
-### 3. Execute o projeto em modo desenvolvimento
-\`\`\`bash
-# Com pnpm
-pnpm dev
+**Nota:** Se houver conflitos de dependências com React 19, use:
+```bash
+npm install --legacy-peer-deps
+```
 
-# Ou com npm
+### 3. Adicione os arquivos Excel
+Coloque os arquivos de dados na pasta `resource/`:
+- `Base-Veiculos.xlsx` - Lista de veículos da frota
+- `Base Rotas.xlsx` - Registro de rotas executadas
+
+### 4. Execute o projeto
+```bash
+# Desenvolvimento
 npm run dev
 
-# Ou com yarn
-yarn dev
-\`\`\`
+# Build de produção
+npm run build
+npm start
+```
 
-### 4. Acesse a aplicação
-Abra [http://localhost:3000](http://localhost:3000) no seu navegador.
+## 🌐 Acesso
 
-## 📦 Scripts Disponíveis
+### Desenvolvimento
+- **URL:** http://localhost:3000 (ou porta disponível)
+- **Timeout da API:** 30 segundos (processamento Excel)
+- **Região:** Configurado para Brasil (gru1) no Vercel
 
-\`\`\`bash
-pnpm dev          # Inicia o servidor de desenvolvimento
-pnpm build        # Gera build de produção
-pnpm start        # Inicia servidor de produção
-pnpm lint         # Executa o ESLint
-\`\`\`
+### Produção
+- **Deploy:** Configurado para Vercel
+- **Domínio:** [Configure seu domínio personalizado]
 
-## 🗂️ Estrutura do Projeto
+## 📁 Estrutura do Projeto
 
-\`\`\`
-├── app/                    # App Router do Next.js 15
-│   ├── globals.css        # Estilos globais
-│   ├── layout.tsx         # Layout principal
-│   └── page.tsx           # Página principal
-├── components/            # Componentes React
-│   ├── ui/               # Componentes do shadcn/ui
-│   ├── vehicle-tracking-table.tsx  # Tabela principal
-│   ├── filter-controls.tsx         # Controles de filtro
-│   ├── legend.tsx                  # Legenda de status
-│   ├── export-button.tsx           # Botão de exportação
-│   └── status-icon.tsx             # Ícones de status
-├── hooks/                 # Hooks customizados
-├── lib/                   # Utilitários
-└── public/               # Arquivos estáticos
-\`\`\`
+```
+Dash-Atividade-Frota/
+├── app/                           # App Router Next.js 15
+│   ├── api/vehicles/             # API para processamento Excel
+│   ├── globals.css               # Estilos globais + Tailwind
+│   ├── layout.tsx                # Layout com providers
+│   └── page.tsx                  # Página principal
+├── components/                    # Componentes React
+│   ├── ui/                       # Componentes shadcn/ui
+│   ├── vehicle-tracking-table.tsx # Tabela principal
+│   ├── filter-controls.tsx       # Controles de filtro
+│   ├── pagination-controls.tsx   # Paginação
+│   ├── export-button.tsx         # Export XLSX
+│   ├── legend.tsx                # Legenda de status
+│   ├── status-icon.tsx           # Ícones ✓/✗
+│   ├── theme-provider.tsx        # Provider de tema
+│   └── theme-toggle.tsx          # Toggle modo escuro
+├── hooks/                        # Hooks customizados
+├── lib/                          # Utilitários e configurações
+├── resource/                     # Arquivos Excel de dados
+│   ├── Base-Veiculos.xlsx        # Dados dos veículos
+│   └── Base Rotas.xlsx           # Dados das rotas
+├── public/                       # Assets estáticos
+├── styles/                       # Estilos adicionais
+├── components.json               # Configuração shadcn/ui
+├── tailwind.config.ts            # Configuração Tailwind
+├── next.config.mjs               # Configuração Next.js
+├── vercel.json                   # Configuração deploy Vercel
+└── tsconfig.json                 # Configuração TypeScript
+```
 
-## 🎯 Próximos Passos Recomendados
+## 📊 Dados e Integração
 
-### 1. **Integração com Backend**
-- Substituir dados mock por API real
-- Implementar autenticação
-- Configurar banco de dados
+### Estrutura dos Dados Excel
 
-### 2. **Funcionalidades Adicionais**
-- Relatórios mais detalhados
-- Gráficos de análise
-- Notificações em tempo real
-- Sistema de permissões
+**Base-Veiculos.xlsx:**
+- Placa, Modelo, Contrato Meli, Categoria
+- Base, Coordenador, Gerente, Tipo de Frota
 
-### 3. **Otimizações**
-- Cache de dados
-- Pagination da tabela
-- Lazy loading
-- PWA (Progressive Web App)
+**Base Rotas.xlsx:**
+- Data Rota, ID Rota, Placa, Cluster
+- Milha, Motorista, Modal, Performance
+- KM Planejado
 
-## 🐛 Troubleshooting
+### Lógica de Status
+- **✅ Rodou:** Existe rota para o veículo na data
+- **❌ Não rodou:** Não há rota registrada (inclui folgas, manutenção, etc.)
 
-### Erro de dependências
-\`\`\`bash
-# Limpe cache e reinstale
-rm -rf node_modules package-lock.json
-pnpm install
-\`\`\`
+## 🔧 Scripts Disponíveis
 
-### Problemas com TypeScript
-O projeto está configurado para ignorar erros de TypeScript durante o build (`ignoreBuildErrors: true`). Para desenvolvimento, você pode remover essa configuração em \`next.config.mjs\`.
+```bash
+npm run dev        # Servidor de desenvolvimento
+npm run build      # Build de produção
+npm run start      # Servidor de produção
+npm run lint       # Verificação ESLint
+```
 
-### Problemas de estilo
-Certifique-se de que o Tailwind CSS está funcionando verificando se os estilos estão sendo aplicados. O arquivo \`globals.css\` contém as configurações necessárias.
+## 🚀 Deploy
 
-## 📝 Dados Mock
+### Vercel (Recomendado)
+```bash
+# Conecte seu repositório GitHub ao Vercel
+# Configuração automática via vercel.json
+```
 
-O projeto atualmente usa dados mock para demonstração. Os dados incluem:
-- 5 veículos de exemplo
-- Status diários simulados
-- Informações de rotas quando o veículo "rodou"
-- Diferentes modalidades (Executivo, Escolar, Urbano, Rodoviário)
+### Configuração do Deploy
+- **Timeout:** 30s para processamento Excel
+- **Região:** South America (gru1)
+- **Node.js:** 18.x+
 
-## 🤝 Contribuição
+## 🔍 Troubleshooting
 
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (\`git checkout -b feature/AmazingFeature\`)
-3. Commit suas mudanças (\`git commit -m 'Add some AmazingFeature'\`)
-4. Push para a branch (\`git push origin feature/AmazingFeature\`)
-5. Abra um Pull Request
+### Problemas Comuns
 
-## 📄 Licença
+**1. Erro de dependências React 19:**
+```bash
+npm install --legacy-peer-deps
+```
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+**2. Timeout na API:**
+- Verifique se os arquivos Excel estão na pasta `resource/`
+- Arquivos muito grandes podem precisar de otimização
+
+**3. Problemas de build:**
+```bash
+rm -rf .next node_modules package-lock.json
+npm install --legacy-peer-deps
+npm run build
+```
+
+**4. Modo escuro não funciona:**
+- Verifique se o ThemeProvider está configurado no layout
+
+## 💾 Dados de Demonstração
+
+Se os arquivos Excel não estiverem disponíveis, o sistema automaticamente usa dados de fallback para demonstração, incluindo:
+- Veículos de exemplo com diferentes configurações
+- Status simulados baseados em padrões reais
+- Informações de rota quando aplicável
 
 ---
 
-⚡ **Desenvolvido com Next.js 15 e muito ☕** 
+**🚀 Sistema completo e pronto para produção** | **⚡ Desenvolvido com Next.js 15 e tecnologias modernas** 
