@@ -10,9 +10,9 @@ export function StatusIcon({ status }: StatusIconProps) {
 
   switch (status) {
     case "rodou":
-      return <Check size={iconSize} className={`text-green-600 ${baseClasses}`} />
+      return <Check size={iconSize} className={`text-green-700 dark:text-green-400 ${baseClasses}`} />
     default:
       // Todos os outros status são "não rodou"
-      return <X size={iconSize} className={`text-red-600 ${baseClasses}`} />
+      return <X size={iconSize} className={`text-red-700 dark:text-red-400 ${baseClasses}`} />
   }
 }

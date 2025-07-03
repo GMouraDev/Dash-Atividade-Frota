@@ -19,16 +19,22 @@ interface Vehicle {
 
 interface ExportButtonProps {
   vehicles: Vehicle[]
+  selectedMonth: number
+  selectedYear: number
 }
 
-export function ExportButton({ vehicles }: ExportButtonProps) {
+export function ExportButton({ vehicles, selectedMonth, selectedYear }: ExportButtonProps) {
   const exportToXLSX = () => {
     // Cabeçalho
     const headers = ["Placa", "Modelo", "Contrato Meli", "Categoria", "Base", "Coordenador", "Gerente", "Tipo Frota"]
 
+    // Calcular número de dias no mês selecionado
+    const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate()
+    const monthStr = (selectedMonth).toString().padStart(2, "0")
+
     // Adicionar dias do mês
-    for (let day = 1; day <= 31; day++) {
-      headers.push(`${day.toString().padStart(2, "0")}/07`)
+    for (let day = 1; day <= daysInMonth; day++) {
+      headers.push(`${day.toString().padStart(2, "0")}/${monthStr}`)
     }
 
     headers.push("Total Dias", "Percentual")
@@ -46,18 +52,20 @@ export function ExportButton({ vehicles }: ExportButtonProps) {
         "Tipo Frota": vehicle.tipoFrota,
       }
 
-      // Adicionar status de cada dia
-      for (let day = 1; day <= 31; day++) {
+      // Adicionar status de cada dia do mês selecionado
+      for (let day = 1; day <= daysInMonth; day++) {
         const dayStr = day.toString().padStart(2, "0")
         const dayData = vehicle.dailyStatus[dayStr] || { status: "sem-rota", routeInfo: null }
         const status = dayData.status
-        row[`${dayStr}/07`] = getStatusLabel(status)
+        row[`${dayStr}/${monthStr}`] = getStatusLabel(status)
       }
 
-      // Calcular estatísticas
-      const totalDays = Object.keys(vehicle.dailyStatus).length
-      const workedDays = Object.values(vehicle.dailyStatus).filter((dayData: any) => dayData.status === "rodou").length
-      const percentage = totalDays > 0 ? Math.round((workedDays / totalDays) * 100) : 0
+      // Calcular estatísticas baseadas apenas nos dias do mês selecionado
+      const totalPossibleDays = daysInMonth
+      const workedDays = Object.keys(vehicle.dailyStatus)
+        .filter(day => parseInt(day) <= daysInMonth)
+        .filter(day => vehicle.dailyStatus[day]?.status === "rodou").length
+      const percentage = totalPossibleDays > 0 ? Math.round((workedDays / totalPossibleDays) * 100) : 0
 
       row["Total Dias"] = workedDays
       row["Percentual"] = `${percentage}%`
@@ -70,8 +78,16 @@ export function ExportButton({ vehicles }: ExportButtonProps) {
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, "Controle de Rodagem")
 
+    // Gerar nome do arquivo com mês e ano corretos
+    const monthNames = [
+      "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+      "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+    ]
+    const monthName = monthNames[selectedMonth - 1]
+    const filename = `controle-rodagem-${monthName}-${selectedYear}.xlsx`
+
     // Download
-    XLSX.writeFile(wb, `controle-rodagem-julho-2025.xlsx`)
+    XLSX.writeFile(wb, filename)
   }
 
   return (

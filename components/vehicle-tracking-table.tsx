@@ -212,7 +212,7 @@ export function VehicleTrackingTable({ vehicles, selectedMonth, selectedYear }: 
                                       <span className="text-blue-300">🚌 Placa Modal:</span> {routeInfo.placaModal}
                                     </p>
                                     <p>
-                                      <span className="text-blue-300">📊 Performance:</span> {routeInfo.performance}%
+                                      <span className="text-blue-300">📊 Performance:</span> {(routeInfo.performance * 100).toFixed(1)}%
                                     </p>
                                     <p className="text-xs text-gray-400">📅 {routeInfo.dataRota}</p>
                                   </div>

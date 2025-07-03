@@ -346,7 +346,11 @@ export default function VehicleTrackingPage() {
               </div>
               <div className="flex items-center gap-3">
                 <ThemeToggle />
-                <ExportButton vehicles={filteredVehicles} />
+                <ExportButton 
+                  vehicles={filteredVehicles} 
+                  selectedMonth={selectedMonth}
+                  selectedYear={selectedYear}
+                />
               </div>
             </div>
           </CardHeader>
